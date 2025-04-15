@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInfoManager : MonoBehaviour
+public class PlayerInfoManager
 {
     public static bool isInfoSubmitted = false;
     public static string selectedPodType = "";

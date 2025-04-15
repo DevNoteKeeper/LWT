@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SuitcaseTrigger : MonoBehaviour
 {
+    public string podType;
     public GameObject podLabel;
     public GameObject warningUI;
     public Vector3 offsetAboveHead = new Vector3(0, 2f, 0);
@@ -51,7 +52,7 @@ public class SuitcaseTrigger : MonoBehaviour
     {
         if (playerInside && PlayerInfoManager.isInfoSubmitted)
         {
-            if (Input.GetKeyDown(KeyCode.G))
+            if (PlayerInfoManager.selectedGenderType == podType && Input.GetKeyDown(KeyCode.G))
             {
                 isCarrying = true;
                 Debug.Log("Suitcase picked up");
