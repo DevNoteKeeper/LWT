@@ -7,7 +7,7 @@ public class SuitcaseTrigger : MonoBehaviour
     public string podType;
     public GameObject podLabel;
     public GameObject warningUI;
-    public Vector3 offsetAboveHead = new Vector3(0, 2f, 0);
+    public Vector3 offsetAboveHead = new Vector3(0, 1f, 0);
 
     private bool playerInside = false;
     public bool isCarrying = false;
@@ -25,14 +25,20 @@ public class SuitcaseTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInside = true;
+            player = other.transform;
+            
 
             if (PlayerInfoManager.isInfoSubmitted)
             {
                 podLabel.SetActive(true);
+                podLabel.transform.position = transform.position + Vector3.up * 2f;
+                warningUI.SetActive(false);
             }
             else
             {
+                podLabel.SetActive(false);
                 warningUI.SetActive(true);
+                warningUI.transform.position = transform.position + Vector3.up * 2f;
             }
         }
         player = other.transform;
@@ -52,7 +58,7 @@ public class SuitcaseTrigger : MonoBehaviour
     {
         if (playerInside && PlayerInfoManager.isInfoSubmitted)
         {
-            if (PlayerInfoManager.selectedGenderType == podType && Input.GetKeyDown(KeyCode.G))
+            if (PlayerInfoManager.selectedPodType == podType && Input.GetKeyDown(KeyCode.G))
             {
                 isCarrying = true;
                 Debug.Log("Suitcase picked up");
@@ -61,7 +67,12 @@ public class SuitcaseTrigger : MonoBehaviour
 
         if (isCarrying && player != null)
         {
-            transform.position = player.position + offsetAboveHead;
+            Vector3 targetPosition = player.position + offsetAboveHead;
+            transform.position = targetPosition;
+
+            // 디버그 로그로 현재 suitcase의 위치 확인
+            Debug.Log("Suitcase position: " + transform.position);
+            Debug.Log("Player position: " + player.position);
         }
     }
 }
