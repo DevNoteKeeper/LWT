@@ -8,15 +8,5 @@ public class PlayerInfoManager
     public static string selectedPodType = "";
     public static string selectedGenderType = "";
     public static string enteredName = "";
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

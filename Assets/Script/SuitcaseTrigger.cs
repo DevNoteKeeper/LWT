@@ -10,7 +10,7 @@ public class SuitcaseTrigger : MonoBehaviour
     public Vector3 offsetAboveHead = new Vector3(0, 2f, 0);
 
     private bool playerInside = false;
-    private bool isCarrying = false;
+    public bool isCarrying = false;
     private Transform player;
 
     // Start is called before the first frame update

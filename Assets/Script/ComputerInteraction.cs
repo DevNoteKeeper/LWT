@@ -8,7 +8,7 @@ public class ComputerInteraction : MonoBehaviour
     private bool isPlayerNearby = false;
     void Start()
     {
-        
+        uiPanel.SetActive(false);
     }
 
     // Update is called once per frame
