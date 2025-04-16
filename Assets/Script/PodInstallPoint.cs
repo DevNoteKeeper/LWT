@@ -122,7 +122,7 @@ public class PodInstallPoint : MonoBehaviour
             return;
         }
 
-        Vector3 installPosition = new Vector3(2, -6.14f, transform.position.z);
+        Vector3 installPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         Quaternion rotation = Quaternion.Euler(-90f, 0f, 0f);
         Instantiate(pod, installPosition, rotation);
         Debug.Log($"Pod installed at {installPosition}");
