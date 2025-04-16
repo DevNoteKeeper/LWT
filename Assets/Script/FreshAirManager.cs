@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class FreshAirManager : MonoBehaviour
 {
+    public static FreshAirManager Instance { get; private set; }
+
+
     public Slider freshAirSlider;
     public float maxAir = 100f;
     public float currentAir;
@@ -12,6 +15,11 @@ public class FreshAirManager : MonoBehaviour
     public Image fillImage;
 
     public bool isInPod = false;
+    void Awake()
+    {
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

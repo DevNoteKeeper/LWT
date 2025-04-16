@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class PodManager : MonoBehaviour
 {
-
     public static PodManager Instance { get; private set; }
-
     public bool IsInPod { get; private set; }
 
     private void Awake()
     {
-
+        // 싱글턴 패턴 적용
         if (Instance == null)
         {
             Instance = this;
@@ -22,6 +20,7 @@ public class PodManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     public void EnterPod()
     {
         IsInPod = true;
@@ -32,5 +31,10 @@ public class PodManager : MonoBehaviour
     {
         IsInPod = false;
         Debug.Log("Exited Pod");
+
+        if (FreshAirManager.Instance != null)
+        {
+            FreshAirManager.Instance.ResetAir();
+        }
     }
 }

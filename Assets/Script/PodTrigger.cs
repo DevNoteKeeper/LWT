@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class PodTrigger : MonoBehaviour
 {
-
-    private void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             PodManager.Instance.EnterPod();
+            Debug.Log("Player entered the pod");
         }
     }
 
@@ -18,6 +18,7 @@ public class PodTrigger : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             PodManager.Instance.ExitPod();
+            Debug.Log("Player exited the pod");
         }
     }
 }
