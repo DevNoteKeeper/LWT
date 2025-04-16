@@ -6,20 +6,23 @@ public class PodInstallPoint : MonoBehaviour
 {
     public PodPoint.PodType allowedPodType;
     public GameObject visualEffect;
-    public GameObject gKeyUI;
-    public GameObject suitcase;
+    public GameObject installUI;
+    public GameObject uninstallUI;
     public GameObject pod;
+
+    public bool isInstallPod = false;
 
     private bool playerNearby = false;
     private Transform player;
-    public SuitcaseTrigger suitcaseTrigger;
+
     // Start is called before the first frame update
     void Start()
     {
-        visualEffect.SetActive(false);
-        gKeyUI.SetActive(false);
-        suitcaseTrigger = suitcase.GetComponent<SuitcaseTrigger>();
+        visualEffect.SetActive(true);
+        installUI.SetActive(false);
+        uninstallUI.SetActive(false);
     }
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -27,13 +30,29 @@ public class PodInstallPoint : MonoBehaviour
         {
             return;
         }
+        player = other.transform;
         if (PlayerInfoManager.isInfoSubmitted)
         {
-            if (PlayerInfoManager.selectedPodType.Contains(allowedPodType.ToString()) == true)
+            string playerPod = PlayerInfoManager.selectedPodType.ToLower();
+            string requiredPod = allowedPodType.ToString().ToLower();
+
+            Debug.Log($"PlayerPod: {playerPod}, RequiredPod: {requiredPod}");
+
+            if (!isInstallPod)
             {
-                visualEffect.SetActive(true);
-                gKeyUI.SetActive(true);
-                playerNearby = true;
+                visualEffect.SetActive(false);
+                installUI.SetActive(true);
+                installUI.transform.position = transform.position + Vector3.up * 0.7f;
+                if(playerPod == requiredPod)
+                {
+                    playerNearby = true;
+                }
+                
+            }
+            else {
+                uninstallUI.SetActive(true);
+                uninstallUI.transform.position = transform.position + Vector3.up * 0.7f;
+                visualEffect.SetActive(false);
             }
         }
         else
@@ -42,30 +61,98 @@ public class PodInstallPoint : MonoBehaviour
         }
     }
 
+
     private void OnTriggerExit(Collider other)
     {
-        if(!other.CompareTag("Player")) return;
-        visualEffect.SetActive(false);
-        gKeyUI.SetActive(false);
-        playerNearby = false;
+        if (!other.CompareTag("Player")) return;
+
+        if (!isInstallPod) {
+            installUI.SetActive(false);
+            playerNearby = false;
+            visualEffect.SetActive(true);
+        }
+        else
+        {
+            uninstallUI.SetActive(false);
+            visualEffect.SetActive(false);
+        }
+        
     }
+
 
     private void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.G))
+
+        if (playerNearby && Input.GetKeyDown(KeyCode.G) && !isInstallPod)
         {
             InstallPod();
+        }
+
+        if (isInstallPod && playerNearby && Input.GetKeyDown(KeyCode.U))
+        {
+            UninstallPod();
         }
     }
 
     private void InstallPod()
     {
-        Destroy(suitcase);
-        Instantiate(pod, transform.position, Quaternion.identity);
+        visualEffect.SetActive(false);
+        SuitcaseTrigger[] suitcaseTriggers = player.GetComponentsInChildren<SuitcaseTrigger>();
+        SuitcaseTrigger carriedSuitcaseTrigger = null;
 
-        Debug.Log("Pod installed");
+        foreach (SuitcaseTrigger trigger in suitcaseTriggers)
+        {
+            if (trigger.isCarrying)
+            {
+                carriedSuitcaseTrigger = trigger;
+                break;
+            }
+        }
+
+        if (carriedSuitcaseTrigger != null)
+        {
+            GameObject suitcaseObj = carriedSuitcaseTrigger.gameObject;
+            carriedSuitcaseTrigger.transform.SetParent(null);
+            Destroy(suitcaseObj);
+            Debug.Log("Suitcase destroyed");
+        }
+        else
+        {
+            Debug.Log("No carried suitcase found");
+            return;
+        }
+
+        Vector3 installPosition = new Vector3(2, -6.14f, transform.position.z);
+        Quaternion rotation = Quaternion.Euler(-90f, 0f, 0f);
+        Instantiate(pod, installPosition, rotation);
+        Debug.Log($"Pod installed at {installPosition}");
+
+        isInstallPod = true;
 
         visualEffect.SetActive(false);
-        gKeyUI.SetActive(false);
+        installUI.SetActive(false);
+        uninstallUI.SetActive(true);
+        uninstallUI.transform.position = transform.position + Vector3.up * 0.7f;
+    }
+
+    private void UninstallPod()
+    {
+        GameObject existingPod = GameObject.FindWithTag("Pod");
+        if (existingPod != null)
+        {
+            Destroy(existingPod);
+            Debug.Log("Pod uninstalled");
+
+            isInstallPod = false;
+
+            uninstallUI.SetActive(false);
+            installUI.SetActive(true);
+            installUI.transform.position = transform.position + Vector3.up * 0.7f;
+            visualEffect.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("No pod found to uninstall");
+        }
     }
 }

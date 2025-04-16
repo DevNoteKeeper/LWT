@@ -26,7 +26,7 @@ public class SuitcaseTrigger : MonoBehaviour
         {
             playerInside = true;
             player = other.transform;
-            
+
 
             if (PlayerInfoManager.isInfoSubmitted)
             {
@@ -61,18 +61,10 @@ public class SuitcaseTrigger : MonoBehaviour
             if (PlayerInfoManager.selectedPodType == podType && Input.GetKeyDown(KeyCode.G))
             {
                 isCarrying = true;
-                Debug.Log("Suitcase picked up");
+                transform.SetParent(player);
+                transform.localPosition = offsetAboveHead;
+                Debug.Log("Suitcase picked up and parented to player");
             }
-        }
-
-        if (isCarrying && player != null)
-        {
-            Vector3 targetPosition = player.position + offsetAboveHead;
-            transform.position = targetPosition;
-
-            // 디버그 로그로 현재 suitcase의 위치 확인
-            Debug.Log("Suitcase position: " + transform.position);
-            Debug.Log("Player position: " + player.position);
         }
     }
 }
